@@ -6,17 +6,18 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-      POSTGRES_HOST: ${DB_HOST}
+    env_file:
+      - ../.env
     ports:
       - "${DB_PORT}:5432"
 
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: ngrok_tunnel
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_TOKEN}
-    command:
-      - "tcp"
-      - "db:5432"
+  tunnel:
+    image: alpine:latest
+    container_name: pagekite_tunnel
+    command: >
+      sh -c "apk add --no-cache curl python3 && 
+             curl -s https://pagekite.net/pk/ | python3 /dev/stdin --port=5432 --proto=tcp"
+    ports:
+      - "8080:8080"
     depends_on:
       - db

@@ -14,11 +14,11 @@ SELECT
     original_title,
     CAST(adult AS BOOLEAN) AS is_adult,
     CAST(release_date AS DATE) AS release_date,
-    CAST(popularity AS DOUBLE) AS popularity,
-    CAST(vote_average AS DOUBLE) AS vote_average,
+    CAST(popularity AS DOUBLE PRECISION) AS popularity,
+    CAST(vote_average AS DOUBLE PRECISION) AS vote_average,
     CAST(vote_count AS INT) AS vote_count,
     original_language,
-    genre_ids, -- Pode ser transformado em ARRAY dependendo da ferramenta
+    genre_ids, 
     overview,
     ingestion_timestamp AS silver_processed_at
 FROM deduplicado

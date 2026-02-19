@@ -36,8 +36,8 @@ except Exception as e:
     exit()
 
 # 4. Creating the Bronze Table
-print("Criando tabela 'bronze.movies'...")
-with engine.connect() as conn:
+print("Criando tabela 'bronze.movies'e schema bronze, silver e gold...")
+with engine.begin() as conn:
     try:
         with open('bronze/movies-csv/CREATE_TABLE_BRONZE_MOVIES.sql', 'r') as file:
             create_table_query = file.read()
@@ -54,7 +54,30 @@ with engine.connect() as conn:
 # 5. Inserting Data into the Bronze Table
 print("Carregando dados para a tabela 'bronze.movies'...")
 print(f"Dados a serem inseridos: {len(df)} linhas.")
-df.to_sql('bronze.movies', engine, if_exists='replace', index=False)
+df.to_sql('movies', schema='bronze', con=engine, if_exists='append', index=False)
 print("Carga finalizada com sucesso.")
 
+
+# 6. Creating the Silver tablea
+print("Criando tabela 'silver.movies'...")
+with engine.begin() as conn:
+    try:
+        with open('silver/movies/CREATE_TABLE_SILVER_MOVIES.sql', 'r') as file:
+            create_table_query = file.read()
+        conn.execute(text(create_table_query))
+        print("Tabela 'silver.movies' criada ou verificada com sucesso.")
+    except Exception as e:
+        print(f"Erro ao criar tabela: {e}")
+        exit()
+
+print("Creating the Gold view...")
+with engine.connect() as conn:
+    try:
+        with open('gold/movies/CREATE_VIEW_GOLD_MOVIES.sql', 'r') as file:
+            create_view_query = file.read()
+        conn.execute(text(create_view_query))
+        print("View 'gold.movies' criada ou verificada com sucesso.")
+    except Exception as e:
+        print(f"Erro ao criar view: {e}")
+        exit()
 print("--- Script finalizado ---")
