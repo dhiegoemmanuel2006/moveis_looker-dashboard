@@ -9,6 +9,8 @@
 
 Em um cenário de produção, o container do Jupyter seria exposto aos Analistas de Dados via VPS com um Proxy Reverso (Nginx) e certificado SSL. O acesso é autenticado via senha criptografada (configurada no docker-compose), isolando o banco de dados PostgreSQL na rede interna do Docker e da Empresa.
 
+## Fluxo
+
 <img src="arquitetura-medalhão.png" width="500">
 
 ## Estrutura importante
