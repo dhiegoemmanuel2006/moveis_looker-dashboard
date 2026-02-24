@@ -1,3 +1,5 @@
+# Docker compose for Database of project   
+# This file is used to set up PostgresSQL for persisti data of pipeline.
 services:
   db:
     image: postgres:latest
@@ -10,14 +12,14 @@ services:
       - ../.env
     ports:
       - "${DB_PORT}:5432"
-
-  tunnel:
-    image: alpine:latest
-    container_name: pagekite_tunnel
-    command: >
-      sh -c "apk add --no-cache curl python3 && 
-             curl -s https://pagekite.net/pk/ | python3 /dev/stdin --port=5432 --proto=tcp"
+# Jupyter Notebook Docker Compose for Web Access
+# This notebook is used for Exploratory Data Analysis (EDA) and data visualization before exporting to Power BI.
+  jupyter:
+    build: .
     ports:
-      - "8080:8080"
-    depends_on:
-      - db
+      - "8888:8888"
+    env_file:
+      - ./.env.notebook
+    volumes:
+      - ../notebooks:/home/jovyan/work
+    command: "start-notebook.sh --NotebookApp.token=''"
